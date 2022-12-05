@@ -44,26 +44,18 @@ if st.button("Predict"):
     #  get the image from the canvas
     image = canvas_result.image_data.astype(np.float32)
     #  reshape the image
-
     image = cv2.resize(image, (28, 28))
     #  normalize the image
     image = image / 255.0
     #  display the image as grayscale
     st.image(image, channels="BGR")
-    #  reshape the image
-    # st.write(image.shape)
     #  remove the alpha channel
     image = image[:, :, :3]
     #  grayscale
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # image = image.unsqueeze(0)
     #  add a batch dimension
     image = image[tf.newaxis, ...]
     image = image[tf.newaxis, ...]
-    #  add a channel dimension
-    # image = image[..., tf.newaxis]
-    # st.write(image.shape)
-
 
     #  set the input tensor
     interpreter.set_tensor(input_details[0]["index"], image)
