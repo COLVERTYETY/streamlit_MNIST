@@ -1,0 +1,110 @@
+<!--  page with a canvas to draw mnist -->
+
+<!DOCTYPE html>
+<html>
+<head>  
+    <!--  import tf -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+    <!--  import plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // load model from graph model
+        async function loadModel() {
+            const model = await tf.loadGraphModel('cnn.js/model.json');
+            return model;
+        }
+        // load model
+        const model = loadModel();
+    </script>
+    <!-- import the model -->
+</head>
+
+<body>
+
+<canvas id="myCanvas" width="280" height="280" style="border:2px solid #000000;" onclick="">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<button onclick="clearCanvas()">Clear</button>
+<h1> Draw a number !</h1>
+<h id="prediction">  Prediction: </h>
+<div id="myDiv"></div>
+
+<script>
+
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+//  set the color to black
+ctx.fillStyle = "#000000";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+//  when the mouse is pressed, draw a line
+canvas.addEventListener("mousedown", function(e) {
+    ctx.beginPath();
+    ctx.moveTo(e.clientX, e.clientY);
+    canvas.addEventListener("mousemove", onPaint, false);
+}, false);
+
+//  when the mouse is released, stop drawing
+canvas.addEventListener("mouseup", function() {
+    canvas.removeEventListener("mousemove", onPaint, false);
+    predict();
+}, false);
+
+//  draw a line from the last point to the current point
+var onPaint = function(e) {
+
+    ctx.lineTo(e.clientX, e.clientY);
+    //  use a line width of 10
+    ctx.lineWidth = 10;
+    //  color the line white
+    ctx.strokeStyle = "#FFFFFF";
+    //  draw the line
+    ctx.stroke();
+    // predict();
+};
+
+//  clear the canvas
+function clearCanvas() {
+    // set the bg to black
+    ctx.fillStyle = "#000000";
+    //  fill the canvas with the bg color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function predict() {
+    //  get the image data from the canvas
+    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    //  convert the image data to a tensor
+    var tensor = tf.browser.fromPixels(imgData, 1);
+    //  resize the image to 28x28
+    var resized = tf.image.resizeBilinear(tensor, [28, 28]);
+    //  normalize the image
+    var normalized = resized.div(255.0);
+    //  reshape the image
+    var reshaped = normalized.reshape([1,1, 28, 28]);
+    //  get the prediction
+    model.then(function (res) {
+        var output = res.predict(reshaped);
+        //  get the index with the highest probability
+        var index = output.argMax(1).dataSync();;
+        //  make a bar plot of the output
+        var data = [{
+            x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            y: output.dataSync(),
+            type: 'bar'
+        }];
+        //  plot the data and title 
+        Plotly.newPlot('myDiv', data, {title: 'Probability'});
+        //  print the prediction
+        document.getElementById("prediction").innerHTML = "Prediction: " + index;
+
+    });
+
+}
+
+</script>
+
+</body>
+
+</html>
