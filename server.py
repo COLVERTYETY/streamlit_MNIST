@@ -9,7 +9,13 @@ import cv2
 ###  this app showcases the tflite model with streamlit
 
 #  load the model
-interpreter = tf.lite.Interpreter(model_path="cnn.tflite")
+@st.cache(allow_output_mutation=True)
+class model:
+    def __init__(self) -> None:
+        self.interpreter = tf.lite.Interpreter(model_path="cnn.tflite")
+
+mymodel = model()
+interpreter = mymodel.interpreter
 interpreter.allocate_tensors()
 
 #  get input and output tensors
