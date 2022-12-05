@@ -10,6 +10,10 @@ To run the app, run the following command in your terminal:
 streamlit run server.py
 ```
 
-## Preview
+## Preview of Streamlit app
 
 ![demo](Screenshot.png)
+
+## Preview of web app
+
+![demo](Screenshot2.png)
