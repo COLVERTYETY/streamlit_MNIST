@@ -39,31 +39,33 @@ canvas_result = st_canvas.st_canvas(
 )
 
 
-#  button to predict
-if st.button("Predict"):
-    #  get the image from the canvas
-    image = canvas_result.image_data.astype(np.float32)
-    #  reshape the image
-    image = cv2.resize(image, (28, 28))
-    #  normalize the image
-    image = image / 255.0
-    #  display the image as grayscale
-    st.image(image, channels="BGR")
-    #  remove the alpha channel
-    image = image[:, :, :3]
-    #  grayscale
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    #  add a batch dimension
-    image = image[tf.newaxis, ...]
-    image = image[tf.newaxis, ...]
+#  always run this
 
-    #  set the input tensor
-    interpreter.set_tensor(input_details[0]["index"], image)
-    #  run the inference
-    interpreter.invoke()
-    #  get the output tensor
-    output_data = interpreter.get_tensor(output_details[0]["index"])
-    #  get the prediction
-    prediction = np.argmax(output_data)
-    #  display the prediction
-    st.write("# The number is: ", prediction)
+#  get the image from the canvas
+image = canvas_result.image_data.astype(np.float32)
+#  reshape the image
+image = cv2.resize(image, (28, 28))
+#  normalize the image
+image = image / 255.0
+#  display the image as grayscale
+st.image(image, channels="BGR")
+#  remove the alpha channel
+image = image[:, :, :3]
+#  grayscale
+image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#  add a batch dimension
+image = image[tf.newaxis, ...]
+image = image[tf.newaxis, ...]
+
+#  set the input tensor
+interpreter.set_tensor(input_details[0]["index"], image)
+#  run the inference
+interpreter.invoke()
+#  get the output tensor
+output_data = interpreter.get_tensor(output_details[0]["index"])
+#  get the prediction
+prediction = np.argmax(output_data)
+#  display the prediction
+st.write("# The number is: ", prediction)
+#  display the probability of all the classes as a bar chart
+st.bar_chart(output_data[0]+np.min(output_data[0]))
