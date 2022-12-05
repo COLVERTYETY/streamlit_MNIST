@@ -17,7 +17,7 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 #  canvas parameters
-stroke_width = st.sidebar.slider("Stroke width: ", 1, 25, 3)
+stroke_width = st.sidebar.slider("Stroke width: ", 1, 25, 13)
 stroke_color = st.sidebar.color_picker("Stroke color hex: ", "#FFFFFF")
 bg_color = st.sidebar.color_picker("Background color hex: ", "#000000")
 bg_image = None
