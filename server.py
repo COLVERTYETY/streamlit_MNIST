@@ -74,4 +74,4 @@ if st.button("Predict"):
     #  get the prediction
     prediction = np.argmax(output_data)
     #  display the prediction
-    st.write("The number is: ", prediction)
+    st.write("# The number is: ", prediction)
