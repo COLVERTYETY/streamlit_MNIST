@@ -16,4 +16,6 @@ streamlit run server.py
 
 ## Preview of web app
 
+[test it out !](https://colvertyety.github.io/streamlit_MNIST/)
+
 ![demo](Screenshot2.png)
